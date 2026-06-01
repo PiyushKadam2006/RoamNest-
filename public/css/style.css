@@ -1,0 +1,92 @@
+* {
+    font-family: "Plus Jakarta Sans", sans-serif;
+}
+
+body {
+    /* imp for footer */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    /* imp forf footer */
+    flex: 1;
+}
+
+.navbar {
+    height: 5rem;
+    background-color: white;
+}
+.navbar-brand{
+    font-size: 2rem !important;
+    color:#FF5A5F !important;
+}
+.card {
+    border: none !important;
+    border-radius: 1rem;
+    margin-bottom: 2rem;
+}
+
+.card-img-top {
+    border-radius: 1rem;
+    width: 100%;
+    height: 30vh;
+    object-fit: cover;
+}
+
+.card-img-overlay {
+    opacity: none !important;
+}
+
+.card-img-overlay:hover {
+    opacity: .2;
+    background-color: WHITE;
+}
+
+.a .listing-link {
+    height: 400px;
+    width: 300px !important;
+    padding: 0 0 !important;
+}
+.fa-brands{
+     gap: 2rem;
+    font-size: 2rem;
+}
+
+/* footer */
+
+
+.container {
+    flex: 1;
+    /* main content grows */
+}
+
+.f-info {
+    
+    margin-top: auto;
+    /* pushes footer down */
+    padding: 1rem;
+    /* add space inside */
+    background-color: #333;
+    color: white;
+
+
+}
+
+.f-info-socials,
+.f-info-comapany,
+.f-info-links {
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.f-info-links a{
+    margin-right: 10px;
+}
+
+/* showroute */
+.btns {
+    display: flex;
+}

@@ -1,0 +1,53 @@
+<%- layout("./layouts/boilerplate"); %>
+
+    <body>
+
+        <div class="row offset-3 mt-2">
+            <div class="col-8 ">
+                <h1>Listing details</h1>
+            </div>
+
+
+            <div class="card col-8">
+                <img src="<%= listing.image.url %>" class="card-img-top show-img" alt="listing-link">
+                <div class="card-body">
+                    <p class="card-text">
+                        <br>
+                        <b>
+                            <%= listing.title %>
+                        </b>
+                    <ul>
+                        <li>Description : <%= listing.description %>
+                        </li>
+                        <li>Price :&#8377 <%= listing.price %>
+                        </li>
+                        <li>location : <%= listing.location %>
+                        </li>
+                        <li>country : <%= listing.country %>
+                        </li>
+                    </ul>
+
+                    </p>
+                </div>
+            </div>
+
+
+
+            <br>
+
+            <!-- <form action="/listings/<%= listing._id %>/edit" method="get">
+        <button>edit listing</button>
+    </form> -->
+            <div class="btns">
+                <a class="btn btn-danger" href="/listings/<%= listing._id %>/edit">Edit</a>
+
+                <br>
+
+                <form action="/listings/<%= listing._id %>?_method=DELETE" method="POST">
+                    <!-- never forget to close the route /////////// -->
+                    <button class="btn btn-danger offset-2">DELETE</button>
+                </form>
+            </div>
+        </div>
+
+    </body>
