@@ -14,7 +14,7 @@
                     <div class="valid-feedback">
                         Looks good!
                     </div>
-                    <div class="invalid-feedback">More example invalid feedback text</div>
+                    <div class="invalid-feedback">Enter valid title </div>
 
                 </div>
 
@@ -22,7 +22,7 @@
                     <label for="description" class="form-label">Description</label>
                     <textarea name="listing[description]" id="description" class="form-control"
                         required> <%= listing.description %></textarea>
-                    <div class="invalid-feedback">More example invalid feedback text</div>
+                    <div class="invalid-feedback">Enter valid description</div>
                 </div>
                 <div class="mb-3">
                     <label for="image" class="form-label">Image URL</label>
@@ -30,7 +30,7 @@
                         id="image" required>
                     
                     <div class="invalid-feedback">
-                        Please select a valid state.
+                        Enter valid image link/url 
                     </div>
                 </div>
 
@@ -41,7 +41,7 @@
                             id="price" required>
                      
                         <div class="invalid-feedback">
-                            Please select a valid state.
+                            Enter valid price
                         </div>
                     </div>
 
@@ -51,7 +51,7 @@
                             id="location" required>
                     
                         <div class="invalid-feedback">
-                            Please select a valid state.
+                            Please enter valid location
                         </div>
                     </div>
                 </div>
@@ -61,10 +61,10 @@
                         id="country" required>
                 
                     <div class="invalid-feedback">
-                        Please select a valid state.
+                       invalid country
                     </div>
                 </div>
-                <button class="btn btn-danger">Edit</button>
+                <button type="submit" class="btn btn-danger">Edit</button>
             </form>
 
 

@@ -34,13 +34,15 @@ app.get("/", (req, res) => {
     res.send("this is home root");
 })
 
-const validateListing = (res, req, err) => {
+/* for server schema validation (JOI) */
+const validateListing = (req,res, next) => {
     let { error } = listingSchema.validate(req.body);
 
     if (error) {
-        let errMsg = error.details.maps((el) => el.message).join(",");
+        let errMsg = error.details.map((el) => el.message).join(",");
         throw new ExpressError(400, errMsg);
     }
+    next()  /* very crucial mistake  */
 };
 
 app.get("/listings", wrapAsync(async (req, res) => {
