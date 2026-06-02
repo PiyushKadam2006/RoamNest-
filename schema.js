@@ -13,3 +13,10 @@ module.exports.listingSchema = joi.object({
     location : joi.string().required(),
     }).required()
 })
+
+module.exports.reviewSchema = joi.object({
+  review : joi.object({
+    comment : joi.string().required(),
+    rating : joi.number().required().min(1).max(5),
+  }).required()
+})

@@ -22,11 +22,18 @@ main {
     font-size: 2rem !important;
     color:#FF5A5F !important;
 }
-.card {
+.listing-card {
     border: none !important;
     border-radius: 1rem;
     margin-bottom: 2rem;
+   
 }
+/* .card {
+    border: none !important;
+    border-radius: 1rem;
+    margin-bottom: 2rem;
+   
+} */
 
 .card-img-top {
     border-radius: 1rem;
@@ -67,6 +74,7 @@ main {
     margin-top: auto;
     /* pushes footer down */
     padding: 1rem;
+    height: 20vh;
     /* add space inside */
     background-color: #333;
     color: white;
