@@ -1,0 +1,77 @@
+const express = require("express");
+const router = express.Router();
+const wrapAsync = require("../utils/wrapAsync.js");
+const { listingSchema, reviewSchema } = require("../schema.js");
+const ExpressError = require("../utils/ExpressError.js");
+const Listing = require("../models/listing");
+
+/* for server schema validation (JOI) listing */
+const validateListing = (req, res, next) => {
+    let { error } = listingSchema.validate(req.body);
+
+    if (error) {
+        let errMsg = error.details.map((el) => el.message).join(",");
+        throw new ExpressError(400, errMsg);
+    }
+    next()  /* very crucial mistake  */
+};
+
+
+
+
+router.get("/", wrapAsync(async (req, res) => {
+    const allListing = await Listing.find({});
+    // console.log(allListing);
+    res.render("./listings/index", { allListing })
+}));
+
+//create route  C
+
+router.get("/new", (req, res) => {
+    res.render("./listings/new");
+})
+//show routes R
+
+router.get("/:id", wrapAsync(async (req, res) => {
+    const { id } = req.params;
+    // const listing = await Listing.findById(id);
+    const listing = await Listing.findById(id).populate("reviews");
+    res.render("./listings/show", { listing });
+}));
+//post route connected with the get form and post the form using new ejs file 
+
+router.post("/", validateListing, wrapAsync(async (req, res, next) => {
+    const newListing = new Listing(req.body.listing);
+    await newListing.save();
+    res.redirect("/listings");
+}));
+
+/* revies post  */
+
+
+//route for edit during update 
+;
+router.get("/:id/edit", wrapAsync(async (req, res) => {
+    const { id } = req.params;
+    const listing = await Listing.findById(id);
+    res.render("listings/edit", { listing })
+}));
+
+router.put("/:id", validateListing, wrapAsync(async (req, res) => {
+    if (!req.body.listing) {
+        throw new ExpressError(400, "Invalid listing data");
+    }
+    const { id } = req.params;
+    await Listing.findByIdAndUpdate(id, { ...req.body.listing });
+    res.redirect("/listings");
+}));
+/* delete listing and call to mongoosew middleware */
+
+router.delete("/:id", wrapAsync(async (req, res) => {
+    const { id } = req.params;
+    const idDelete = await Listing.findByIdAndDelete(id);
+    console.log(idDelete);
+    res.redirect("/listings");
+}));
+
+module.exports = router;
