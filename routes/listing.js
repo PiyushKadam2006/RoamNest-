@@ -22,27 +22,34 @@ const validateListing = (req, res, next) => {
 router.get("/", wrapAsync(async (req, res) => {
     const allListing = await Listing.find({});
     // console.log(allListing);
-    res.render("./listings/index", { allListing })
+    res.render("listings/index", { allListing })
 }));
 
 //create route  C
 
 router.get("/new", (req, res) => {
-    res.render("./listings/new");
+    res.render("listings/new");
 })
-//show routes R
 
+//show routes R
 router.get("/:id", wrapAsync(async (req, res) => {
     const { id } = req.params;
     // const listing = await Listing.findById(id);
     const listing = await Listing.findById(id).populate("reviews");
-    res.render("./listings/show", { listing });
+    if(!listing){
+        /* agar listing exist nahi karti , and deleted lisitng ka libnk past kiya to error new error.ejs pe nahi , lisitng pe error dikhaye  */
+        req.flash("error","Listing you requested for does not exist !");
+       return  res.redirect("/listings");
+    }
+    res.render("listings/show", { listing });
 }));
 //post route connected with the get form and post the form using new ejs file 
 
 router.post("/", validateListing, wrapAsync(async (req, res, next) => {
     const newListing = new Listing(req.body.listing);
     await newListing.save();
+    /* flash sessions  */
+    req.flash("success","New Listing add");    
     res.redirect("/listings");
 }));
 
@@ -63,7 +70,8 @@ router.put("/:id", validateListing, wrapAsync(async (req, res) => {
     }
     const { id } = req.params;
     await Listing.findByIdAndUpdate(id, { ...req.body.listing });
-    res.redirect("/listings");
+    req.flash("success","Listing eddited successfully !!!");    
+    res.redirect(`listings/${id}`);
 }));
 /* delete listing and call to mongoosew middleware */
 
@@ -71,6 +79,7 @@ router.delete("/:id", wrapAsync(async (req, res) => {
     const { id } = req.params;
     const idDelete = await Listing.findByIdAndDelete(id);
     console.log(idDelete);
+    req.flash("success","Listing deleted successfully !!!");    
     res.redirect("/listings");
 }));
 

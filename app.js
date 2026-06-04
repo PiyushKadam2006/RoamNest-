@@ -12,6 +12,8 @@ const Reviewing = require("./models/review");
 const Review = require("./models/review");
 const listings = require("./routes/listing.js")
 const reviews = require("./routes/review.js")
+const session = require("express-session");
+const flash = require("connect-flash");
 
 app.use(express.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
@@ -34,9 +36,36 @@ async function main() {
 }
 //create  index route 
 
+
+/* express sessions  */
+const sessionOptions={
+    secret : "mysupersecretcode",
+    resave : false,
+    saveUninitialized : true,
+    cookie: {
+        expires : Date.now() + 7*24*60*60*1000,
+        maxAge :  7*24*60*60*1000,
+        httpOnly : true,  //cross scripting attacks
+    }
+}
+
+app.use(session(sessionOptions));
+app.use(flash()); //routes ke pehle 
+/* defined localMiddleware */
+app.use((req,res,next)=>{
+    res.locals.success = req.flash("success");
+    console.log( res.locals.success);
+    res.locals.error = req.flash("error");
+    console.log( res.locals.error);
+    next();
+})
+
 /* routes */
 app.use("/listings",listings);
 app.use("/listings/:id/reviews",reviews);
+
+
+
 
 app.get("/", (req, res) => {
     res.send("this is home root");
