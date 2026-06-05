@@ -1,6 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const path = require("path")
+const path = require("path");
 const app = express();
 const Listing = require("./models/listing");
 const methodOverride = require("method-override");
@@ -14,6 +14,10 @@ const listings = require("./routes/listing.js")
 const reviews = require("./routes/review.js")
 const session = require("express-session");
 const flash = require("connect-flash");
+const passport = require("passport");
+const LocalStrategy = require("passport-local");
+const User =require("./models/user.js");
+
 
 app.use(express.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
@@ -52,6 +56,17 @@ const sessionOptions={
 app.use(session(sessionOptions));
 app.use(flash()); //routes ke pehle 
 /* defined localMiddleware */
+
+/* configaring strategy for user models */
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+
+passport.serializeUser(User.serializeUser());  //serialize user into sessions 
+passport.deserializeUser(User.deserializeUser()); //deserialize user from sessions 
+/*  */
+
+
 app.use((req,res,next)=>{
     res.locals.success = req.flash("success");
     console.log( res.locals.success);
@@ -60,21 +75,22 @@ app.use((req,res,next)=>{
     next();
 })
 
+app.get("/demouser", wrapAsync(async (req, res) => {
+    let fakeUser = new User({ email: "student@gmail.com", username: "alpha-student" });
+    let registeredUser = await User.register(fakeUser, "helloworld");
+    res.send(registeredUser);
+}));
+
+
 /* routes */
 app.use("/listings",listings);
 app.use("/listings/:id/reviews",reviews);
 
 
-
-
 app.get("/", (req, res) => {
     res.send("this is home root");
 })
-
-
-
 //what is error in this complete file is that if we have any error in any route then it will not be handled and it will show the error in console but we want to handle the error and show the error in the browser so for that we have to use try catch block in every route but it is very hectic so we can use a function which will wrap our async function and catch the error and pass it to next function and then we can handle the error in the error handling middleware? help me 
-
 app.use((req, res, next) => {
     next(new ExpressError(404, "page not found"));
 });

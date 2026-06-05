@@ -71,7 +71,7 @@ router.put("/:id", validateListing, wrapAsync(async (req, res) => {
     const { id } = req.params;
     await Listing.findByIdAndUpdate(id, { ...req.body.listing });
     req.flash("success","Listing eddited successfully !!!");    
-    res.redirect(`listings/${id}`);
+    res.redirect(`/listings/${id}`);
 }));
 /* delete listing and call to mongoosew middleware */
 
