@@ -26,8 +26,7 @@ router.post("/signup", wrapAsync(async (req, res) => {
 router.get("/login", (req, res) => {
   res.render("users/login.ejs");
 });
-
-router.post(
+/* router.post(
   "/login"
   , passport.authenticate("local",
   {
@@ -37,7 +36,21 @@ router.post(
   async (req, res) => {
     req.flash("success", "Welcome back to wnaderlust ,you are logged in !");
     res.redirect("/listings/new");
-  });
+  }); */
+
+  router.post("/login", passport.authenticate("local", {
+    failureRedirect: "/login",
+    failureFlash: true,
+}), async (req, res) => {
+    let redirectUrl = req.session.redirectUrl || "/listings";
+    delete req.session.redirectUrl;
+    req.flash("success", "Welcome back to wanderlust, you are logged in!");
+    res.redirect(redirectUrl);
+});
+
+
+
+
 /* logged out  */
   router.get("/logout",(req,res)=>{
     req.logout((err)=>{

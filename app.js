@@ -10,14 +10,14 @@ const ExpressError = require("./utils/ExpressError.js");
 const { listingSchema, reviewSchema } = require("./schema.js");
 const Reviewing = require("./models/review");
 const Review = require("./models/review");
-const listings = require("./routes/listing.js")
+const listings = require("./routes/listing.js");
 const reviews = require("./routes/review.js")
 const session = require("express-session");
 const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const User =require("./models/user.js");
-const userRoute = require("./routes/user.js")
+const userRoute = require("./routes/user.js");
 
 
 app.use(express.urlencoded({ extended: true }));
@@ -68,14 +68,15 @@ passport.use(new LocalStrategy(User.authenticate()));
 
 passport.serializeUser(User.serializeUser());  //serialize user into sessions 
 passport.deserializeUser(User.deserializeUser()); //deserialize user from sessions 
-/*  */
 
 
+/* locals */
 app.use((req,res,next)=>{
     res.locals.success = req.flash("success");
     // console.log( res.locals.success);
     res.locals.error = req.flash("error");
     // console.log( res.locals.error);
+    res.locals.currUser =req.user;
     next();
 })
 /* 
