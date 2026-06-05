@@ -17,6 +17,7 @@ const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const User =require("./models/user.js");
+const userRoute = require("./routes/user.js")
 
 
 app.use(express.urlencoded({ extended: true }));
@@ -25,6 +26,9 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(methodOverride("_method"));
 app.engine('ejs', ejsMate);
 app.use(express.static(path.join(__dirname, "/public")));
+
+/* deprication warnin */
+mongoose.set('strictQuery', true);
 
 const MONGO_URL = "mongodb://localhost:27017/wanderlust";
 main()
@@ -69,22 +73,23 @@ passport.deserializeUser(User.deserializeUser()); //deserialize user from sessio
 
 app.use((req,res,next)=>{
     res.locals.success = req.flash("success");
-    console.log( res.locals.success);
+    // console.log( res.locals.success);
     res.locals.error = req.flash("error");
-    console.log( res.locals.error);
+    // console.log( res.locals.error);
     next();
 })
-
+/* 
 app.get("/demouser", wrapAsync(async (req, res) => {
     let fakeUser = new User({ email: "student@gmail.com", username: "alpha-student" });
     let registeredUser = await User.register(fakeUser, "helloworld");
     res.send(registeredUser);
-}));
+})); */
 
 
 /* routes */
 app.use("/listings",listings);
 app.use("/listings/:id/reviews",reviews);
+app.use("/",userRoute);
 
 
 app.get("/", (req, res) => {

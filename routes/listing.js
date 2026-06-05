@@ -4,6 +4,7 @@ const wrapAsync = require("../utils/wrapAsync.js");
 const { listingSchema, reviewSchema } = require("../schema.js");
 const ExpressError = require("../utils/ExpressError.js");
 const Listing = require("../models/listing");
+const {isLoggedIn} = require("../middleware.js")
 
 /* for server schema validation (JOI) listing */
 const validateListing = (req, res, next) => {
@@ -18,7 +19,7 @@ const validateListing = (req, res, next) => {
 
 
 
-
+/* index route  */
 router.get("/", wrapAsync(async (req, res) => {
     const allListing = await Listing.find({});
     // console.log(allListing);
@@ -26,8 +27,10 @@ router.get("/", wrapAsync(async (req, res) => {
 }));
 
 //create route  C
-
-router.get("/new", (req, res) => {
+/* new route */
+router.get("/new",isLoggedIn, (req, res) => {
+    console.log(req.user);////////////////////////////////////////////////////////////////////////
+   
     res.render("listings/new");
 })
 
@@ -43,9 +46,9 @@ router.get("/:id", wrapAsync(async (req, res) => {
     }
     res.render("listings/show", { listing });
 }));
+//post route for new lisiting creation
 //post route connected with the get form and post the form using new ejs file 
-
-router.post("/", validateListing, wrapAsync(async (req, res, next) => {
+router.post("/",isLoggedIn, validateListing, wrapAsync(async (req, res, next) => {
     const newListing = new Listing(req.body.listing);
     await newListing.save();
     /* flash sessions  */
@@ -58,13 +61,13 @@ router.post("/", validateListing, wrapAsync(async (req, res, next) => {
 
 //route for edit during update 
 ;
-router.get("/:id/edit", wrapAsync(async (req, res) => {
+router.get("/:id/edit",isLoggedIn, wrapAsync(async (req, res) => {
     const { id } = req.params;
     const listing = await Listing.findById(id);
     res.render("listings/edit", { listing })
 }));
 
-router.put("/:id", validateListing, wrapAsync(async (req, res) => {
+router.put("/:id", isLoggedIn,validateListing, wrapAsync(async (req, res) => {
     if (!req.body.listing) {
         throw new ExpressError(400, "Invalid listing data");
     }
@@ -75,7 +78,7 @@ router.put("/:id", validateListing, wrapAsync(async (req, res) => {
 }));
 /* delete listing and call to mongoosew middleware */
 
-router.delete("/:id", wrapAsync(async (req, res) => {
+router.delete("/:id",isLoggedIn, wrapAsync(async (req, res) => {
     const { id } = req.params;
     const idDelete = await Listing.findByIdAndDelete(id);
     console.log(idDelete);
