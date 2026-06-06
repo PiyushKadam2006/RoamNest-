@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const Review = require("./review");
+const User = require("./user");
 
 const ListingSchema = new mongoose.Schema({
     title: {
@@ -23,9 +24,12 @@ const ListingSchema = new mongoose.Schema({
         type : Schema.Types.ObjectId,
          ref : "Review"      
        }
-
-    ]
-
+    ],
+    /* for listing owner */
+    owner :{
+      type : Schema.Types.ObjectId,
+       ref: "User", 
+    },
 });
 
 /*  mongo middle */

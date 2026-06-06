@@ -4,7 +4,7 @@
  // ,make connection with main and function 
 
  const mongoose = require("mongoose");
- const intiData = require(".data.js");
+ const initData = require("./data.js");
  const Listing = require("../models/listing");
 
  const MONGO_URL = "mongodb://localhost:27017/wanderlust";
@@ -21,10 +21,13 @@ async function main(){
     await mongoose.connect(MONGO_URL);
 }
 
-const intiData =async ()=>{
+const initDB =async ()=>{
    await Listing.deleteMany({});
-   await Listing.insertMany({});
-   console.log("data initialised success");
-}
+   initData.data =initData.data.map((obj)=>({...obj,
+      owner :"6a22a4ba602ea8bd6b2cb73d",
+   }));
+   await Listing.insertMany(initData.data);
+   console.log("data intialised success");
+};
 
-intiData();
+initDB();
