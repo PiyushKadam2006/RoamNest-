@@ -6,6 +6,7 @@ const ExpressError = require("../utils/ExpressError.js");
 const Listing = require("../models/listing");
 const Reviewing = require("../models/review");
 /* const Review = require("../models/review"); */
+const { isLoggedIn ,isOwner,validateListing,validateReview} = require("../middleware.js")
 
 
 
@@ -13,15 +14,7 @@ const Reviewing = require("../models/review");
 
 
 /* server side validation middleware for review */
-const validateReview = (req, res, next) => {
-    let { error } = reviewSchema.validate(req.body);
 
-    if (error) {
-        let errMsg = error.details.map((el) => el.message).join(",");
-        throw new ExpressError(400, errMsg);
-    }
-    next()  /* very crucial mistake  */
-};
 
 /* reviews routes */
 

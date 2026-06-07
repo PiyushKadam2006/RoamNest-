@@ -30,7 +30,7 @@
     </form> -->
 
       <!-- if condition for to access only to delete and edit for the creater and owner should same  -->
-       <% if (currUser &&  currUser._id.equals(listing.owner._id)) { %>
+       
             <div class="btns mb-3">
                 <a class="btn btn-danger" href="/listings/<%= listing._id %>/edit">Edit</a>
                 <br>
@@ -39,7 +39,7 @@
                     <button class="btn btn-danger offset-2">DELETE</button>
                 </form>
             </div>
-       <% } %>      
+          
             <hr>
             <div class="row mt-2">
                 <h4>Leave Review : </h4>

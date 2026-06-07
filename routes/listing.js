@@ -4,18 +4,10 @@ const wrapAsync = require("../utils/wrapAsync.js");
 const { listingSchema, reviewSchema } = require("../schema.js");
 const ExpressError = require("../utils/ExpressError.js");
 const Listing = require("../models/listing");
-const {isLoggedIn} = require("../middleware.js")
+const { isLoggedIn ,isOwner,validateListing} = require("../middleware.js")
 
 /* for server schema validation (JOI) listing */
-const validateListing = (req, res, next) => {
-    let { error } = listingSchema.validate(req.body);
 
-    if (error) {
-        let errMsg = error.details.map((el) => el.message).join(",");
-        throw new ExpressError(400, errMsg);
-    }
-    next()  /* very crucial mistake  */
-};
 
 
 
@@ -28,29 +20,29 @@ router.get("/", wrapAsync(async (req, res) => {
 
 //create route  C
 /* new route */
-router.get("/new",isLoggedIn, (req, res) => {
+router.get("/new", isLoggedIn, (req, res) => {
     console.log(req.user);////////////////////////////////////////////////////////////////////////
-   
+
     res.render("listings/new");
 })
 
 //show routes R
 router.get(
-    "/:id", 
+    "/:id",
     wrapAsync(async (req, res) => {
-    let { id } = req.params;
-    // const listing = await Listing.findById(id);
-    const listing = await Listing.findById(id)
-    .populate("reviews")
-    .populate("owner"); // listings ke andar me owner kar expand karke dega , like looks simple
-    if(!listing){
-        /* agar listing exist nahi karti , and deleted lisitng ka libnk past kiya to error new error.ejs pe nahi , lisitng pe error dikhaye  */
-        req.flash("error","Listing you requested for does not exist !");
-       return  res.redirect("/listings");
-    }
-    console.log(listing);
-    res.render("listings/show", { listing });
-}));
+        let { id } = req.params;
+        // const listing = await Listing.findById(id);
+        const listing = await Listing.findById(id)
+            .populate("reviews")
+            .populate("owner"); // listings ke andar me owner kar expand karke dega , like looks simple
+        if (!listing) {
+            /* agar listing exist nahi karti , and deleted lisitng ka libnk past kiya to error new error.ejs pe nahi , lisitng pe error dikhaye  */
+            req.flash("error", "Listing you requested for does not exist !");
+            return res.redirect("/listings");
+        }
+        console.log(listing);
+        res.render("listings/show", { listing });
+    }));
 //post route for new lisiting creation
 //post route connected with the get form and post the form using new ejs file
 
@@ -59,45 +51,49 @@ router.post("/",
     isLoggedIn,
     validateListing,
     wrapAsync(async (req, res, next) => {
-    const newListing = new Listing(req.body.listing);
-    console.log(req.user);
-    /* for the error of 'username'*/
-    newListing.owner = req.user._id;
-    await newListing.save();
-    /* flash sessions  */
-    req.flash("success","New Listing add");    
-    res.redirect("/listings");
-}));
+        const newListing = new Listing(req.body.listing);
+        console.log(req.user);//ye owner related data store karata he 
+        /* for the error of 'username'*/
+        newListing.owner = req.user._id;
+        await newListing.save();
+        /* flash sessions  */
+        req.flash("success", "New Listing add");
+        res.redirect("/listings");
+    }));
 
 /* revies post  */
 
 
 //route for edit  
-router.get("/:id/edit",isLoggedIn, wrapAsync(async (req, res) => {
+router.get("/:id/edit", isLoggedIn,isOwner, wrapAsync(async (req, res) => {
     const { id } = req.params;
     const listing = await Listing.findById(id);
     res.render("listings/edit", { listing })
 }));
-//during update
-router.put("/:id",
-     isLoggedIn,
-     validateListing, 
-     wrapAsync(async (req, res) => {
-    if (!req.body.listing) {
-        throw new ExpressError(400, "Invalid listing data");
-    }
-    const { id } = req.params;
-    await Listing.findByIdAndUpdate(id, { ...req.body.listing });
-    req.flash("success","Listing eddited successfully !!!");    
-    res.redirect(`/listings/${id}`);
-}));
+//during update route
+router.put(
+    "/:id",
+    isLoggedIn,
+    isOwner,
+    validateListing,
+    wrapAsync(async (req, res) => {
+        let { id } = req.params;
+        // if (!currUser && !listing.owner._id.equals(res.locals.currUser._id)) {
+        //     req.flash("error", "You don't have permission to edit")
+        //     return res.redirect(`/listings/${id}`);
+        //     // throw new ExpressError(400, "Invalid listing data");
+        // }
+        await Listing.findByIdAndUpdate(id, { ...req.body.listing });
+        req.flash("success", "Listing eddited successfully !!!");
+        res.redirect(`/listings/${id}`);
+    }));
 
 /* delete listing and call to mongoosew middleware */
-router.delete("/:id",isLoggedIn, wrapAsync(async (req, res) => {
+router.delete("/:id", isLoggedIn,isOwner, wrapAsync(async (req, res) => {
     const { id } = req.params;
     const idDelete = await Listing.findByIdAndDelete(id);
     console.log(idDelete);
-    req.flash("success","Listing deleted successfully !!!");    
+    req.flash("success", "Listing deleted successfully !!!");
     res.redirect("/listings");
 }));
 
