@@ -6,7 +6,7 @@ const ExpressError = require("../utils/ExpressError.js");
 const Listing = require("../models/listing");
 const Reviewing = require("../models/review");
 /* const Review = require("../models/review"); */
-const { isLoggedIn ,isOwner,validateListing,validateReview} = require("../middleware.js")
+const { isLoggedIn ,isOwner,validateListing,validateReview,isReviewAuthor} = require("../middleware.js")
 /* server side validation middleware for review */
 
 
@@ -28,7 +28,9 @@ router.post("/",isLoggedIn,
     res.redirect(`/listings/${listing._id}`);
 }))
 /* delete for reviews */
-router.delete("/:review_id", wrapAsync(async (req, res) => {
+router.delete("/:review_id",
+    isLoggedIn,isReviewAuthor,
+    wrapAsync(async (req, res) => {
     const { id ,review_id} = req.params;
     // const idDelete = await Review.findByIdAndDelete(id);
     await Listing.findByIdAndUpdate(id,{$pull : {reviews : review_id}})

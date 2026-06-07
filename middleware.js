@@ -8,6 +8,8 @@
 const Listing = require("./models/listing");
 const { listingSchema, reviewSchema } = require("./schema.js");
 const ExpressError = require("./utils/ExpressError.js");
+const Review = require("./models/review");
+// const Listing = require("../models/listing");
 
     module.exports.isLoggedIn = (req, res, next) => {
       console.log(req);
@@ -61,4 +63,16 @@ module.exports.validateReview = (req, res, next) => {
     }
     next()  /* very crucial mistake  */
 };
+
+module.exports.isReviewAuthor = async (req,res,next)=>{
+  let { id ,review_id } = req.params;
+         let review = await Review.findById(review_id);
+         if ( !review.author._id.equals(res.locals.currUser._id)){
+         req.flash("error","Only author have permission !!!")
+         return res.redirect(`/listings/${id}`);
+}
+next();
+}
+
+
 
