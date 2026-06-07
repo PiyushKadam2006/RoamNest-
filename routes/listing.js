@@ -33,7 +33,11 @@ router.get(
         let { id } = req.params;
         // const listing = await Listing.findById(id);
         const listing = await Listing.findById(id)
-            .populate("reviews")
+            .populate({ path : "reviews", //nested pupulat for authors name 
+                populate:{
+                    path : "author",
+                },
+            })
             .populate("owner"); // listings ke andar me owner kar expand karke dega , like looks simple
         if (!listing) {
             /* agar listing exist nahi karti , and deleted lisitng ka libnk past kiya to error new error.ejs pe nahi , lisitng pe error dikhaye  */
