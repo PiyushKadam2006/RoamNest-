@@ -7,26 +7,21 @@ const Listing = require("../models/listing");
 const Reviewing = require("../models/review");
 /* const Review = require("../models/review"); */
 const { isLoggedIn ,isOwner,validateListing,validateReview} = require("../middleware.js")
-
-
-
-
-
-
 /* server side validation middleware for review */
 
 
-/* reviews routes */
 
-router.post("/",validateReview, wrapAsync(async (req, res) => {
+/* reviews routes */
+router.post("/",isLoggedIn,
+    validateReview, 
+    wrapAsync(async (req, res) => {
     const listing = await Listing.findById(req.params.id);
     const newReview = new Reviewing(req.body.review);
-
+    newReview.author=req.user._id;   //CRUCIAL during review document ke ander user(author) ki ad push karna 
+    console.log(newReview);
     listing.reviews.push(newReview);
-
     await listing.save();
     await newReview.save();
-
     console.log("review is saved ");
     /* res.send("review is saved "); */
      req.flash("success","New Review created !!!");   

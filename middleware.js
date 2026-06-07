@@ -6,10 +6,8 @@
     next();
 } */
 const Listing = require("./models/listing");
-
 const { listingSchema, reviewSchema } = require("./schema.js");
 const ExpressError = require("./utils/ExpressError.js");
-
 
     module.exports.isLoggedIn = (req, res, next) => {
       console.log(req);
