@@ -6,7 +6,9 @@ const ExpressError = require("../utils/ExpressError.js");
 const Listing = require("../models/listing");
 const { isLoggedIn, isOwner, validateListing } = require("../middleware.js")
 
-
+/* multer */
+const multer  = require('multer')
+const upload = multer({ dest: 'uploads/' })    //our multiparse data will be send to this file
 
 /* controllers  */
 const listingController = require("../controllers/listings.js");
@@ -16,7 +18,13 @@ const listingController = require("../controllers/listings.js");
 router.
     route("/")
     .get(wrapAsync(listingController.index))
-    .post(isLoggedIn, validateListing, wrapAsync(listingController.editLinsting));
+    /* .post(
+        isLoggedIn, 
+        validateListing,
+        wrapAsync(listingController.createLeasting)); */
+        .post(upload.single('listing[image]'),(req,res)=>{
+            res.send(req.file);
+        });
 
 /* new route => always make above /:id route otherwise will be considered as id */
 router.get("/new", isLoggedIn, listingController.renderNewForm);

@@ -31,7 +31,7 @@ module.exports.showLinsting = async (req, res) => {
     res.render("listings/show", { listing });
 };
 
-module.exports.editLinsting = async (req, res, next) => {
+module.exports.createLeasting = async (req, res, next) => {
     const newListing = new Listing(req.body.listing);
     console.log(req.user);//ye owner related data store karata he 
     /* for the error of 'username'*/

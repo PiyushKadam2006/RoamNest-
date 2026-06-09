@@ -5,7 +5,13 @@
    
             <h1>Create new list</h1>
 
-            <form action="/listings" method="post" novalidate class="needs-validation" required>
+            <form 
+            action="/listings" 
+            method="post" 
+            novalidate 
+            class="needs-validation" 
+            required enctype="multipart/form-data"
+            >
 
                 <div class="mb-3">
                     <label for="title" class="form-label">Title</label>
@@ -32,12 +38,24 @@
                     </div>
 
                 </div>
-                <div class="mb-3">
+                <!-- <div class="mb-3">
                     <label for="image" class="form-label">Image URL</label>
                     <input type="text" placeholder="(eg.https://image.png)" name="listing[image][url]" required
                         class="form-control" id="image">
                     <div class="invalid-feedback">
                         Please enter valid url of image 
+                    </div> -->
+                <!-- </div> -->
+
+                <div class="mb-3">
+                    <label for="image" class="form-label">Upload Listing Image</label>
+                    <input type="file" 
+                    name="listing[image]" 
+                    required id="image"
+                    class="form-control" 
+                    id="image">
+                    <div class="invalid-feedback">
+                        Please Upload image 
                     </div>
 
                 </div>
@@ -67,7 +85,7 @@
                     </div>
                 </div>
                 <div class="mb-3">
-                    <label for="  Please enter valid price" class="form-label">country</label>
+                    <label for="country" class="form-label">country</label>
                     <input type="text" placeholder="(eg.India)" required name="listing[country]" class="form-control"
                         id="country">
                     <div class="valid-feedback">
