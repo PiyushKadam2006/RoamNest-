@@ -9,37 +9,18 @@ const Reviewing = require("../models/review");
 const { isLoggedIn ,isOwner,validateListing,validateReview,isReviewAuthor} = require("../middleware.js")
 /* server side validation middleware for review */
 
+/* review controller */
+const reviewController = require("../controllers/reviews.js");
 
 
 /* reviews routes */
 router.post("/",isLoggedIn,
     validateReview, 
-    wrapAsync(async (req, res) => {
-    const listing = await Listing.findById(req.params.id);
-    const newReview = new Reviewing(req.body.review);
-    newReview.author=req.user._id;   //CRUCIAL during review document ke ander user(author) ki ad push karna 
-    console.log(newReview);
-    listing.reviews.push(newReview);
-    await listing.save();
-    await newReview.save();
-    console.log("review is saved ");
-    /* res.send("review is saved "); */
-     req.flash("success","New Review created !!!");   
-    res.redirect(`/listings/${listing._id}`);
-}))
+    wrapAsync(reviewController.createReview))
 /* delete for reviews */
 router.delete("/:review_id",
     isLoggedIn,isReviewAuthor,
-    wrapAsync(async (req, res) => {
-    const { id ,review_id} = req.params;
-    // const idDelete = await Review.findByIdAndDelete(id);
-    await Listing.findByIdAndUpdate(id,{$pull : {reviews : review_id}})
-    await Reviewing.findByIdAndDelete(review_id)
-    // console.log(idDelete);
-    req.flash("success"," Review deleted !!!");    
-    res.redirect(`/listings/${id}`);
-
-}));
+    wrapAsync(reviewController.destroyReview));
 
 
 module.exports = router;
