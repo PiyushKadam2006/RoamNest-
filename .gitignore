@@ -1,5 +1,5 @@
+.env
 node_modules/
 index.html/
 classroom/
 uploads/
-.env/
