@@ -8,19 +8,36 @@
         /* margin-top: 3px; */
         display: flex;
         flex-wrap: wrap;
+        align-items: center;
     }
-    .filter{
+
+    .filter {
         text-align: center;
-        margin-right:2rem;
+        margin-right: 2rem;
         margin-top: 2rem;
         opacity: 0.7;
+        
     }
-    .filter:hover{
+
+    .filter:hover {
         opacity: 1;
         cursor: pointer;
     }
+
     .filter p {
         font-size: 0.8rem;
+    }
+    .tax-info{
+        display: none;
+    }
+    .tax-toggle{
+        border: 1px solid black;
+        border-radius: 1rem;
+        height: 3.25rem;
+        padding: 1rem;
+        margin-left: 4rem;
+        display: flex;
+        align-items: center;
     }
 </style>
 <div id="filters">
@@ -69,6 +86,23 @@
             <p>Arctic</p>
         </div>
     </div>
+    <div class="filter">
+        <div><i class="fa-solid fa-cow"></i>
+            <p>Farms</p>
+        </div>
+    </div>
+    <div class="filter">
+        <div><i class="fa-solid fa-snowflake"></i>
+            <p>Arctic</p>
+        </div>
+    </div>
+
+    <div class="tax-toggle">
+        <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" role="switch" id="switchCheckDefault">
+            <label class="form-check-label" for="switchCheckDefault">Display Total After Taxes</label>
+        </div>
+    </div>
 </div>
 <div class="row row-cols-lg-4 row-cols-md-3  row-cols-sm-2 mt-3">
     <% for(let list of allListing){%>
@@ -81,7 +115,8 @@
                         <b>
                             <%= list.title %>
                         </b><br>
-                        price: &#8377 <%=list.price ? list.price.toLocaleString('en-IN') : 'N/A' %> <br>
+                        price: &#8377 <%=list.price ? list.price.toLocaleString('en-IN') : 'N/A' %>/ Night <br>
+                        <i class="tax-info">&nbsp;&nbsp;+18% GST</i>
                     </p>
                 </div>
             </div>
@@ -91,3 +126,18 @@
 
 
             <!-- </html> -->
+
+            <script>
+                let taxSwitch = document.getElementById("switchCheckDefault")
+                taxSwitch.addEventListener("click",()=>{
+                    // console.log("switch clicked");
+                    let taxInfo = document.getElementsByClassName("tax-info");
+                    for(info of taxInfo){
+                        if(info.style.display != "inline"){
+                            info.style.display = "inline";
+                        }else{
+                            info.style.display = "none";
+                        }
+                    }
+                });
+            </script>
