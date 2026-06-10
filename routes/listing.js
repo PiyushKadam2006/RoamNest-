@@ -5,10 +5,10 @@ const { listingSchema, reviewSchema } = require("../schema.js");
 const ExpressError = require("../utils/ExpressError.js");
 const Listing = require("../models/listing");
 const { isLoggedIn, isOwner, validateListing } = require("../middleware.js")
-
-/* multer */
+/*multer */
 const multer  = require('multer')
-const upload = multer({ dest: 'uploads/' })    //our multiparse data will be send to this file
+/* for cloudinary this place is imp */ const {storage} =require("../cloudConfig.js");
+const upload = multer({ storage })    //our multiparse data will be send to this file
 
 /* controllers  */
 const listingController = require("../controllers/listings.js");
@@ -18,13 +18,14 @@ const listingController = require("../controllers/listings.js");
 router.
     route("/")
     .get(wrapAsync(listingController.index))
-    /* .post(
+    .post(
         isLoggedIn, 
         validateListing,
-        wrapAsync(listingController.createLeasting)); */
-        .post(upload.single('listing[image]'),(req,res)=>{
-            res.send(req.file);
-        });
+        upload.single('listing[image]'),
+        wrapAsync(listingController.createListing)
+    );
+       
+       
 
 /* new route => always make above /:id route otherwise will be considered as id */
 router.get("/new", isLoggedIn, listingController.renderNewForm);
@@ -32,7 +33,11 @@ router.get("/new", isLoggedIn, listingController.renderNewForm);
 router.
     route("/:id")
     .get(wrapAsync(listingController.showLinsting))
-    .put(isLoggedIn, isOwner, validateListing, wrapAsync(listingController.updateListing))
+    .put(isLoggedIn, 
+        isOwner,
+         validateListing,
+          upload.single('listing[image]'),
+        wrapAsync(listingController.updateListing))
     .delete(isLoggedIn, isOwner, wrapAsync(listingController.destroyListings));
 //create route  C
 

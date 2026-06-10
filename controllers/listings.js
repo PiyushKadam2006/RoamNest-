@@ -31,11 +31,15 @@ module.exports.showLinsting = async (req, res) => {
     res.render("listings/show", { listing });
 };
 
-module.exports.createLeasting = async (req, res, next) => {
+module.exports.createListing = async (req, res, next) => {
+    let url = req.file.path;
+    let filename = req.file.filename;
+    console.log(url, "...", filename); // ye merese nahi show ho paya 
     const newListing = new Listing(req.body.listing);
-    console.log(req.user);//ye owner related data store karata he 
+    // console.log(req.user);//ye owner related data store karata he 
     /* for the error of 'username'*/
     newListing.owner = req.user._id;
+    newListing.image = { url, filename };
     await newListing.save();
     /* flash sessions  */
     req.flash("success", "New Listing add");
@@ -49,16 +53,23 @@ module.exports.renderEditForm = async (req, res) => {
 };
 
 module.exports.updateListing = async (req, res) => {
-        let { id } = req.params;
-        // if (!currUser && !listing.owner._id.equals(res.locals.currUser._id)) {
-        //     req.flash("error", "You don't have permission to edit")
-        //     return res.redirect(`/listings/${id}`);
-        //     // throw new ExpressError(400, "Invalid listing data");
-        // }
-        await Listing.findByIdAndUpdate(id, { ...req.body.listing });
-        req.flash("success", "Listing eddited successfully !!!");
-        res.redirect(`/listings/${id}`);
-    };
+    let { id } = req.params;
+    // if (!currUser && !listing.owner._id.equals(res.locals.currUser._id)) {
+    //     req.flash("error", "You don't have permission to edit")
+    //     return res.redirect(`/listings/${id}`);
+    //     // throw new ExpressError(400, "Invalid listing data");
+    // }
+    let listing = await Listing.findByIdAndUpdate(id, { ...req.body.listing });
+    if (typeof req.file !== "undefined") {
+        let url = req.file.path;
+        let filename = req.file.filename;
+        listing.image = { url, filename };
+        await listing.save();
+    }
+
+    req.flash("success", "Listing eddited successfully !!!");
+    res.redirect(`/listings/${id}`);
+};
 
 module.exports.destroyListings = async (req, res) => {
     const { id } = req.params;
