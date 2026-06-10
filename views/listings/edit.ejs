@@ -24,6 +24,12 @@
                         required> <%= listing.description %></textarea>
                     <div class="invalid-feedback">Enter valid description</div>
                 </div>
+
+                <!-- preview image -->
+                 <div class="mb-3">
+                    <b><label for="image" class>Original Listing Image</label></b> 
+                    <img src="<%= originalImageUrl %>" alt="" id="image"  >
+                 </div>
                 <div class="mb-3">
                     <label for="image" class="form-label">Upload image</label>
                     <input type="file" value="<%= listing.image.url %>" name="listing[image][url]" class="form-control"

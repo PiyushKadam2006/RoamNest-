@@ -49,7 +49,13 @@ module.exports.createListing = async (req, res, next) => {
 module.exports.renderEditForm = async (req, res) => {
     const { id } = req.params;
     const listing = await Listing.findById(id);
-    res.render("listings/edit", { listing })
+    if(!listing){
+        req.flash("error","Listing you requested for does not exist !");
+        req.redirect("/listings");
+    }
+    let originalImageUrl = listing.image.url;
+    originalImageUrl.replace("/upload","/upload/h_300,w_250");
+    res.render("listings/edit", { listing ,originalImageUrl })
 };
 
 module.exports.updateListing = async (req, res) => {
