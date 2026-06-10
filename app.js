@@ -101,9 +101,9 @@ app.use("/listings/:id/reviews",reviews);
 app.use("/",userRoute);
 
 
-app.get("/", (req, res) => {
+/* app.get("/", (req, res) => {
     res.send("this is home root");
-})
+}) */
 //what is error in this complete file is that if we have any error in any route then it will not be handled and it will show the error in console but we want to handle the error and show the error in the browser so for that we have to use try catch block in every route but it is very hectic so we can use a function which will wrap our async function and catch the error and pass it to next function and then we can handle the error in the error handling middleware? help me 
 app.use((req, res, next) => {
     next(new ExpressError(404, "page not found"));
