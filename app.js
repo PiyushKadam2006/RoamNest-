@@ -129,6 +129,7 @@ app.use((req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
+     console.log("ERROR ROUTE:", req.method, req.path); 
     let { statusCode = 500, message = "Something went wrong" } = err;
     res.status(statusCode).render("error", { err });
 })
