@@ -20,8 +20,8 @@ router.
     .get(wrapAsync(listingController.index))
     .post(
         isLoggedIn, 
-        validateListing,
         upload.single('listing[image]'),
+        validateListing,
         wrapAsync(listingController.createListing)
     );
        
@@ -35,8 +35,8 @@ router.
     .get(wrapAsync(listingController.showLinsting))
     .put(isLoggedIn, 
         isOwner,
+        upload.single('listing[image]'),
          validateListing,
-          upload.single('listing[image]'),
         wrapAsync(listingController.updateListing))
     .delete(isLoggedIn, isOwner, wrapAsync(listingController.destroyListings));
 //create route  C
