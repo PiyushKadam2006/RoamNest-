@@ -1,3 +1,6 @@
+
+// 0 = disconnected, 1 = connected, 2 = connecting
+
 if(process.env.NODE_ENV != "production"){
     require('dotenv').config();
 }
@@ -19,6 +22,7 @@ const Review = require("./models/review");
 const listings = require("./routes/listing.js");
 const reviews = require("./routes/review.js")
 const session = require("express-session");
+const MongoStore = require("connect-mongo");
 const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
@@ -38,24 +42,38 @@ app.use(express.static(path.join(__dirname, "/public")));
 /* deprication warnin */
 mongoose.set('strictQuery', true);
 
-const MONGO_URL = "mongodb://localhost:27017/wanderlust";
+// const MONGO_URL = "mongodb://localhost:27017/wanderlust";
+const dbUrl = process.env.ATLASDB_URL
+// console.log(dbUrl);
 main()
     .then(() => {
         console.log("connected to dataBase");
     })
     .catch((err) => {
-        console.log("ERROR DURING CONNECTING WITH DATABASE");
-    })
+    console.log("ACTUAL ERROR:", err.message); // change this line
+})
 
 async function main() {
-    await mongoose.connect(MONGO_URL);
+    await mongoose.connect(dbUrl);
 }
 //create  index route 
+console.log("Mongoose state:", mongoose.connection.readyState);
+/* mongo connect sessions  */
+const store = MongoStore.create({
+    mongoUrl : dbUrl,
+    crypto : {
+        secret : process.env.SECRET,
+    },
+    touchAfter : 24 *3600,
+});
 
-
+store.on("error",()=>{
+    console.log("ERROR in MONGO SESSION STORE",err);
+})
 /* express sessions  */
 const sessionOptions={
-    secret : "mysupersecretcode",
+    store,   //can be store : store 
+    secret : process.env.SECRET,
     resave : false,
     saveUninitialized : true,
     cookie: {
@@ -64,6 +82,7 @@ const sessionOptions={
         httpOnly : true,  //cross scripting attacks
     }
 }
+
 
 app.use(session(sessionOptions));
 app.use(flash()); //routes ke pehle 
