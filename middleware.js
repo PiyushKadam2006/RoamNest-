@@ -12,8 +12,8 @@ const Review = require("./models/review");
 // const Listing = require("../models/listing");
 
     module.exports.isLoggedIn = (req, res, next) => {
-      console.log(req);
-      console.log(req.user);  ///checking is logged in or nor for stylling signup login logout
+      // console.log(req);
+      // console.log(req.user);  ///checking is logged in or nor for stylling signup login logout
     if (!req.isAuthenticated()) {
       /* redirectUrl */
       /*  isLoggedIn KO call lagegi tabhi to below wala varible defined hoga */
