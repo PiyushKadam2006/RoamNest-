@@ -44,6 +44,7 @@ mongoose.set('strictQuery', true);
 
 // const MONGO_URL = "mongodb://localhost:27017/wanderlust";
 const dbUrl = process.env.ATLASDB_URL
+const PORT = process.env.PORT || 8080;
 // console.log(dbUrl);
 main()
     .then(() => {
@@ -133,6 +134,6 @@ app.use((err, req, res, next) => {
     let { statusCode = 500, message = "Something went wrong" } = err;
     res.status(statusCode).render("error", { err });
 })
-app.listen(8080, () => {
-    console.log("connected to server port 8080");
+app.listen(PORT, () => {
+    console.log(`connected to server port ${PORT}`);
 })
