@@ -31,18 +31,33 @@ module.exports.showLinsting = async (req, res) => {
     res.render("listings/show", { listing });
 };
 
+// module.exports.createListing = async (req, res, next) => {
+//     let url = req.file.path;
+//     let filename = req.file.filename;
+//     console.log(url, "...", filename); // ye merese nahi show ho paya 
+//     const newListing = new Listing(req.body.listing);
+//     // console.log(req.user);//ye owner related data store karata he 
+//     /* for the error of 'username'*/
+//     newListing.owner = req.user._id;
+//     newListing.image = { url, filename };
+//     await newListing.save();
+//     /* flash sessions  */
+//     req.flash("success", "New Listing add");
+//     res.redirect("/listings");
+// };
 module.exports.createListing = async (req, res, next) => {
-    let url = req.file.path;
-    let filename = req.file.filename;
-    console.log(url, "...", filename); // ye merese nahi show ho paya 
     const newListing = new Listing(req.body.listing);
-    // console.log(req.user);//ye owner related data store karata he 
-    /* for the error of 'username'*/
     newListing.owner = req.user._id;
-    newListing.image = { url, filename };
+
+    if (req.file) {                          // ← only set image if file was uploaded
+        newListing.image = {
+            url: req.file.path,
+            filename: req.file.filename,
+        };
+    }
+
     await newListing.save();
-    /* flash sessions  */
-    req.flash("success", "New Listing add");
+    req.flash("success", "New Listing added!");
     res.redirect("/listings");
 };
 
