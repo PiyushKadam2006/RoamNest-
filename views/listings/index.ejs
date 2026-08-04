@@ -5,42 +5,64 @@
 <!-- <br><br> -->
 <style>
     #filters {
-        /* margin-top: 3px; */
         display: flex;
         flex-wrap: wrap;
         align-items: center;
+        gap: 0.5rem 1.5rem;
+        padding: 1rem 0 0.5rem;
+        border-bottom: 1px solid #eee;
+        margin-bottom: 1rem;
     }
 
     .filter {
         text-align: center;
-        margin-right: 2rem;
-        margin-top: 2rem;
-        opacity: 0.7;
-        
+        opacity: 0.6;
+        cursor: pointer;
+        transition: opacity 0.2s;
     }
 
     .filter:hover {
         opacity: 1;
-        cursor: pointer;
+    }
+
+    .filter i {
+        font-size: 1.4rem;
+        display: block;
+        margin-bottom: 4px;
     }
 
     .filter p {
-        font-size: 0.8rem;
+        font-size: 0.75rem;
+        margin: 0;
+        white-space: nowrap;
     }
-    .tax-info{
-        display: none;
-    }
-    .tax-toggle{
-        border: 1px solid black;
+
+    .tax-toggle {
+        margin-left: auto;
+        border: 1px solid #ddd;
         border-radius: 1rem;
-        height: 3.25rem;
-        padding: 1rem;
-        margin-left: 4rem;
+        padding: 0.5rem 1rem;
         display: flex;
         align-items: center;
+        font-size: 0.85rem;
+        white-space: nowrap;
+    }
+
+    .tax-info {
+        display: none;
+        color: #888;
+    }
+
+    .listing-card {
+        border: none !important;
+        transition: transform 0.15s ease;
+    }
+
+    .listing-card:hover {
+        transform: translateY(-3px);
     }
 </style>
-<div id="filters">
+<!-- <div id="filters">
     <div class="filter">
         <div><i class="fa-solid fa-fire"></i>
             <p>Trending</p>
@@ -103,22 +125,76 @@
             <label class="form-check-label" for="switchCheckDefault">Display Total After Taxes</label>
         </div>
     </div>
+</div> -->
+<div id="filters">
+    <% 
+    const filters = [
+        { label: "Trending",      icon: "fa-fire" },
+        { label: "Hotels",        icon: "fa-bed" },
+        { label: "Iconic Cities", icon: "fa-mountain-city" },
+        { label: "Mountains",     icon: "fa-mountain-sun" },
+        { label: "Castles",       icon: "fa-fort-awesome fa-brands" },
+        { label: "Amazing Pools", icon: "fa-person-swimming" },
+        { label: "Camping",       icon: "fa-campground" },
+        { label: "Farms",         icon: "fa-cow" },
+        { label: "Arctic",        icon: "fa-snowflake" },
+        { label: "Beaches",       icon: "fa-umbrella-beach" },
+    ];
+    %>
+    <% for (let f of filters) { %>
+        <a href="/listings?category=<%= f.label %><%= searchTerm ? '&search=' + searchTerm : '' %>" 
+           class="filter <%= activeCategory === f.label ? 'active-filter' : '' %>"
+           style="text-decoration:none; color:inherit;">
+            <div>
+                <i class="fa-solid <%= f.icon %>"></i>
+                <p><%= f.label %></p>
+            </div>
+        </a>
+    <% } %>
+
+    <div class="tax-toggle">
+        <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" role="switch" id="switchCheckDefault">
+            <label class="form-check-label" for="switchCheckDefault">Display Total After Taxes</label>
+        </div>
+    </div>
 </div>
-<div class="row row-cols-lg-4 row-cols-md-3  row-cols-sm-2 mt-3">
+<% if (searchTerm || activeCategory) { %>
+  <div class="d-flex align-items-center justify-content-between mt-3 mb-1">
+    <p class="text-muted mb-0">
+      <% if (activeCategory) { %><b><%= activeCategory %></b><% } %>
+      <% if (searchTerm) { %> — "<%= searchTerm %>"<% } %>
+      &nbsp;· <%= allListing.length %> listing<%= allListing.length !== 1 ? 's' : '' %>
+    </p>
+    <a href="/listings" class="btn btn-sm btn-outline-secondary">Clear all</a>
+  </div>
+<% } %>
+
+<% if (allListing.length === 0) { %>
+  <div class="text-center mt-5">
+    <i class="fa-solid fa-magnifying-glass fa-2x text-muted mb-3 d-block"></i>
+    <p class="text-muted">No listings found</p>
+    <a href="/listings" class="btn btn-outline-danger">Browse all listings</a>
+  </div>
+<% } %>
+<div class="row row-cols-xl-4 row-cols-lg-3 row-cols-md-2 row-cols-sm-1 g-3 mt-2">
     <% for(let list of allListing){%>
-        <a href="/listings/<%= list._id %>" class="listing-link">
-            <div class="card cols listing-card" style="width: 18rem;">
+      <a href="/listings/<%= list._id %>" class="listing-link text-decoration-none text-dark">
+    <div class="card listing-card">
                 <img src="<%=list.image.url%>" class="card-img-top" alt="image-name" style="height: 18rem;">
-                <div class="card-img-overlay">abcd</div>
-                <div class="card-body">
-                    <p class="card-text">
-                        <b>
-                            <%= list.title %>
-                        </b><br>
-                        price: &#8377 <%=list.price ? list.price.toLocaleString('en-IN') : 'N/A' %>/ Night <br>
-                        <i class="tax-info">&nbsp;&nbsp;+18% GST</i>
-                    </p>
-                </div>
+                <!-- <div class="card-img-overlay">abcd</div> -->
+              <div class="card-body px-0 pt-2 pb-0">
+    <p class="card-text mb-0">
+        <b><%= list.title %></b>
+    </p>
+    <p class="card-text text-muted" style="font-size:0.9rem;">
+        <%= list.location %>, <%= list.country %>
+    </p>
+    <p class="card-text" style="font-size:0.9rem;">
+        <b>&#8377;<%= list.price ? list.price.toLocaleString('en-IN') : 'N/A' %></b> / night
+        <i class="tax-info">&nbsp;+18% GST</i>
+    </p>
+</div>
             </div>
         </a>
         <%}%>

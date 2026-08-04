@@ -88,11 +88,11 @@ async function startServer() {
 
         // 8. Error handler
         app.use((err, req, res, next) => {
-            console.log("ERROR ROUTE:", req.method, req.path);
-            if (res.headersSent) return next(err);
-            let { statusCode = 500, message = "Something went wrong" } = err;
-            res.status(statusCode).render("error", { err });
-        });
+    if (res.headersSent) return next(err);
+    err.statusCode = err.statusCode || 500;
+    err.message = err.message || "Something went wrong";
+    res.status(err.statusCode).render("error", { err });
+});
 
         // 9. Start listening
         app.listen(PORT, "0.0.0.0", () => {

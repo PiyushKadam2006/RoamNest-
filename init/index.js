@@ -21,13 +21,18 @@ async function main(){
     await mongoose.connect(MONGO_URL);
 }
 
-const initDB =async ()=>{
-   await Listing.deleteMany({});
-   initData.data =initData.data.map((obj)=>({...obj,
-      owner :"6a22a4ba602ea8bd6b2cb73d",
-   }));
-   await Listing.insertMany(initData.data);
-   console.log("data intialised success");
+const categories = ["Trending", "Hotels", "Iconic Cities", "Mountains", "Castles", 
+                    "Amazing Pools", "Camping", "Farms", "Arctic", "Beaches"];
+
+const initDB = async () => {
+    await Listing.deleteMany({});
+    initData.data = initData.data.map((obj, i) => ({
+        ...obj,
+        owner: "6a22a4ba602ea8bd6b2cb73d",
+        category: categories[i % categories.length], // spread evenly
+    }));
+    await Listing.insertMany(initData.data);
+    console.log("data initialised success");
 };
 
 initDB();

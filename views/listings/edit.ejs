@@ -4,8 +4,9 @@
 
             <h1>Edit listing</h1>
 
-            <form novalidate class="needs-validation" method="post" required
-                action="/listings/<%= listing._id %>?_method=PUT">
+       <form novalidate class="needs-validation" method="POST"
+    action="/listings/<%= listing._id %>?_method=PUT"
+    enctype="multipart/form-data">
 
                 <div class="mb-3">
                     <label for="title" class="form-label">Title</label>
@@ -27,19 +28,35 @@
 
                 <!-- preview image -->
                  <div class="mb-3">
-                    <b><label for="image" class>Original Listing Image</label></b> 
-                    <img src="<%= originalImageUrl %>" alt="" id="image"  >
-                 </div>
-                <div class="mb-3">
-                    <label for="image" class="form-label">Upload image</label>
-                    <input type="file" value="<%= listing.image.url %>" name="listing[image][url]" class="form-control"
-                        id="image" required>
-                    
-                    <!-- <div class="invalid-feedback">
-                        Enter valid image link/url 
-                    </div> -->
-                </div>
-
+    <label class="form-label">Current Image</label><br>
+    <img 
+        src="<%= originalImageUrl %>" 
+        alt="current listing image"
+        style="width: 250px; height: 180px; object-fit: cover; border-radius: 0.75rem; margin-bottom: 0.75rem;"
+    >
+    <label class="form-label d-block">Upload a new image <span class="text-muted" style="font-size:0.85rem;">(leave empty to keep current)</span></label>
+    <input 
+        type="file" 
+        name="listing[image]" 
+        accept="image/png, image/jpg, image/jpeg"
+        class="form-control"
+    >
+</div>
+                 <div class="mb-3">
+    <label class="form-label">Category</label>
+    <select name="listing[category]" class="form-select">
+        <option value="Trending"      <%= listing.category === 'Trending'      ? 'selected' : '' %>>Trending</option>
+        <option value="Hotels"        <%= listing.category === 'Hotels'        ? 'selected' : '' %>>Hotels</option>
+        <option value="Iconic Cities" <%= listing.category === 'Iconic Cities' ? 'selected' : '' %>>Iconic Cities</option>
+        <option value="Mountains"     <%= listing.category === 'Mountains'     ? 'selected' : '' %>>Mountains</option>
+        <option value="Castles"       <%= listing.category === 'Castles'       ? 'selected' : '' %>>Castles</option>
+        <option value="Amazing Pools" <%= listing.category === 'Amazing Pools' ? 'selected' : '' %>>Amazing Pools</option>
+        <option value="Camping"       <%= listing.category === 'Camping'       ? 'selected' : '' %>>Camping</option>
+        <option value="Farms"         <%= listing.category === 'Farms'         ? 'selected' : '' %>>Farms</option>
+        <option value="Arctic"        <%= listing.category === 'Arctic'        ? 'selected' : '' %>>Arctic</option>
+        <option value="Beaches"       <%= listing.category === 'Beaches'       ? 'selected' : '' %>>Beaches</option>
+    </select>
+</div>
                 <div class="row">
                     <div class="mb-3 col-md-4">
                         <label for="price" class="form-label">Price</label>

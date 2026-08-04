@@ -38,7 +38,7 @@
         <!--  <a class="nav-link disabled" aria-disabled="true">Disabled</a> -->
       </div>
       <div class="navbar-nav ms-auto">
-        <form class="d-flex" role="search">
+        <!-- <form class="d-flex" role="search">
           <input class="form-control me-2 search-input" 
           type="search" 
           placeholder="Search destinations" 
@@ -48,8 +48,20 @@
             <i class="fa-solid fa-magnifying-glass"></i>
             Search
           </button>
-        </form>
-
+        </form> -->
+        <form class="d-flex" role="search" action="/listings" method="GET">
+  <input 
+    class="form-control me-2 search-input" 
+    type="search" 
+    placeholder="Search destinations" 
+    name="search"
+    value="<%= typeof searchTerm !== 'undefined' ? searchTerm : '' %>"
+  />
+  <button class="btn search-btn d-flex align-items-center gap-1" type="submit">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    Search
+  </button>
+</form>
       </div>
       <div class="navbar-nav ms-auto">
         <a class="nav-link" href="/listings/new">Airbnb your home</a>

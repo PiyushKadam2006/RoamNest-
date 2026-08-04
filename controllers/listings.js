@@ -2,9 +2,29 @@ const Listing = require("../models/listing");
 
 
 module.exports.index = async (req, res) => {
-    const allListing = await Listing.find({});
-    // console.log(allListing);
-    res.render("listings/index", { allListing });
+    const { search, category } = req.query;
+    let filter = {};
+
+    if (search && search.trim() !== "") {
+        const regex = new RegExp(search.trim(), "i");
+        filter.$or = [
+            { title: regex },
+            { location: regex },
+            { country: regex },
+            { description: regex },
+        ];
+    }
+
+    if (category && category.trim() !== "") {
+        filter.category = category;
+    }
+
+    const allListing = await Listing.find(filter);
+    res.render("listings/index", { 
+        allListing, 
+        searchTerm: search || "",
+        activeCategory: category || "",
+    });
 };
 
 module.exports.renderNewForm = (req, res) => {
@@ -75,11 +95,6 @@ module.exports.renderEditForm = async (req, res) => {
 
 module.exports.updateListing = async (req, res) => {
     let { id } = req.params;
-    // if (!currUser && !listing.owner._id.equals(res.locals.currUser._id)) {
-    //     req.flash("error", "You don't have permission to edit")
-    //     return res.redirect(`/listings/${id}`);
-    //     // throw new ExpressError(400, "Invalid listing data");
-    // }
     let listing = await Listing.findByIdAndUpdate(id, { ...req.body.listing });
     if (typeof req.file !== "undefined") {
         let url = req.file.path;
@@ -87,8 +102,7 @@ module.exports.updateListing = async (req, res) => {
         listing.image = { url, filename };
         await listing.save();
     }
-
-    req.flash("success", "Listing eddited successfully !!!");
+    req.flash("success", "Listing edited successfully!");
     res.redirect(`/listings/${id}`);
 };
 

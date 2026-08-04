@@ -1,16 +1,109 @@
-<%- layout("./layouts/boilerplate"); %>
+<%- layout("./layouts/boilerplate") %>
 
-<div class="row mt-3">
+<style>
+    .error-page {
+        min-height: 70vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 2rem;
+    }
+    .error-code {
+        font-size: 8rem;
+        font-weight: 800;
+        color: #FF5A5F;
+        line-height: 1;
+        margin-bottom: 0;
+    }
+    .error-squiggle {
+        width: 80px;
+        height: 4px;
+        background: #FF5A5F;
+        border-radius: 2px;
+        margin: 1rem auto;
+    }
+    .error-title {
+        font-size: 1.6rem;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 0.5rem;
+    }
+    .error-msg {
+        font-size: 1rem;
+        color: #888;
+        max-width: 420px;
+        margin: 0 auto 2rem;
+    }
+    .error-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    .btn-home {
+        background-color: #FF5A5F;
+        color: white;
+        border: none;
+        padding: 0.65rem 1.5rem;
+        border-radius: 2rem;
+        font-size: 0.95rem;
+        text-decoration: none;
+        transition: background 0.2s;
+    }
+    .btn-home:hover {
+        background-color: #e04a50;
+        color: white;
+    }
+    .btn-back {
+        background-color: white;
+        color: #333;
+        border: 1.5px solid #ddd;
+        padding: 0.65rem 1.5rem;
+        border-radius: 2rem;
+        font-size: 0.95rem;
+        text-decoration: none;
+        transition: border-color 0.2s;
+    }
+    .btn-back:hover {
+        border-color: #aaa;
+        color: #333;
+    }
+</style>
 
+<div class="error-page">
 
-    <div class="alert alert-danger d-flex align-items-center" role="alert">
-        <svg class="bi flex-shrink-0 me-2" role="img" aria-label="Danger:">
-            <use xlink:href="#exclamation-triangle-fill" />
-        </svg>
-        <div>
-            <%= err.message %>
-            <%= err.stack %>
-        </div>
+    <% if (err.statusCode === 404) { %>
+        <p class="error-code">404</p>
+        <div class="error-squiggle"></div>
+        <p class="error-title">Page not found</p>
+        <p class="error-msg">
+            Looks like this listing flew away. The page you're looking for doesn't exist or has been removed.
+        </p>
+    <% } else if (err.statusCode === 403) { %>
+        <p class="error-code">403</p>
+        <div class="error-squiggle"></div>
+        <p class="error-title">Access denied</p>
+        <p class="error-msg">
+            You don't have permission to view this page.
+        </p>
+    <% } else { %>
+        <p class="error-code"><%= err.statusCode || 500 %></p>
+        <div class="error-squiggle"></div>
+        <p class="error-title">Something went wrong</p>
+        <p class="error-msg">
+            <%= err.message || "An unexpected error occurred. Please try again." %>
+        </p>
+    <% } %>
+
+    <div class="error-actions">
+        <a href="/listings" class="btn-home">
+            <i class="fa-solid fa-compass me-1"></i> Browse listings
+        </a>
+        <a href="javascript:history.back()" class="btn-back">
+            ← Go back
+        </a>
     </div>
 
 </div>
