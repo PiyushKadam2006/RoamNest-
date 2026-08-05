@@ -7,7 +7,6 @@
 ![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-brightgreen?logo=mongodb)
 ![Cloudinary](https://img.shields.io/badge/Cloudinary-Image%20Storage-blue?logo=cloudinary)
 ![Render](https://img.shields.io/badge/Deployed-Render-purple?logo=render)
-![License](https://img.shields.io/badge/License-ISC-yellow)
 
 ---
 
